@@ -1,0 +1,73 @@
+{% extends 'index/base.html' %}
+{% load staticfiles %}
+{% block title %}
+    Register
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/user/registration.css' %}">
+{% endblock %}
+
+{% block body %}
+    <div class="register-photo">
+        <div class="form-container">
+            <div class="image-holder"></div>
+
+            <form method="POST">
+                {% csrf_token %}
+                <legend class="text-center"><strong>Create</strong> an account.</legend>
+
+                {# errors #}
+                {% if form.non_field_errors %}
+                    <div class="text-danger form-text">
+                        {% for error in form.non_field_errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <br>
+                {% endif %}
+
+                {% for hidden_field in form.hidden_fields %}
+                    {% if hidden_field.errors %}
+                        <div class="has-text-danger help">
+                            {% for error in hidden_field.errors %}
+                                <small>(Hidden field {{ hidden_field.name }}) {{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <br>
+                    {% endif %}
+                    {{ hidden_field }}
+                {% endfor %}
+
+                {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        <label for="username">{{ field.label_tag }}</label>
+                        {{ field }}
+
+                        {% if field.errors %}
+                            <div>
+                                <small class="text-danger form-text">{{ field.errors }}</small>
+                                {% if field.help_text %}
+                                    <small id="emailHelp" class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                            <br>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <div class="form-group">
+                    <button class="btn btn-primary btn-block" type="submit">Sign Up</button>
+                </div>
+
+                <a href="{% url 'user:login' %}" class="already">You already have an account? Login here.</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}
